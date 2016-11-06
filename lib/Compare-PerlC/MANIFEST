@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+PerlC.xs
+ppport.h
+README
+t/Compare-PerlC.t
+lib/Compare/PerlC.pm
