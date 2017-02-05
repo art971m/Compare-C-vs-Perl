@@ -1,6 +1,0 @@
-Revision history for Perl extension Compare::PerlC.
-
-0.01  Sun Nov  6 14:56:46 2016
-	- original version; created by h2xs 1.23 with options
-		-n Compare::PerlC -A -O -x -F '-I ../../libc' comparison.h
-
