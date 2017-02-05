@@ -10,7 +10,7 @@ require XSLoader;
 our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-our @EXPORT = qw(is_even);
+our @EXPORT = qw(is_even round);
 our $VERSION = '0.01';
 
 XSLoader::load('CvsPerl', $VERSION);
