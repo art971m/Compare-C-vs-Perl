@@ -5,4 +5,9 @@ MANIFEST
 ppport.h
 README
 t/CvsPerl.t
+fallback/const-c.inc
+fallback/const-xs.inc
 lib/CvsPerl.pm
+lib/Makefile.PL
+lib/testclib.c
+lib/testclib.h

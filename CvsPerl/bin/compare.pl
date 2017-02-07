@@ -11,19 +11,4 @@ BEGIN {
 }
 
 use ExtUtils::testlib;
-use CvsPerl qw(is_even round);
-
-CvsPerl::hello();
-
-my $format = "is %s even: %s\n";
-for my $i (0..4) {
-	printf $format, $i, (is_even($i)) ? 'true' : 'false';	
-}
-
-$format = "%-20s rounded: %s\n";
-for my $i (1..4) {
-	my $to_round = $i + ($i + 0.3)/3;
-	my $rounded = $to_round;
-	round($rounded);
-	printf $format, $to_round, $rounded;	
-}
+use CvsPerl qw();

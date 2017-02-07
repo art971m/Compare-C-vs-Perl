@@ -5,32 +5,22 @@
 
 #include "ppport.h"
 
+#include <./CvsPerl/lib/testclib.h>
+
+#include "const-c.inc"
 
 MODULE = CvsPerl		PACKAGE = CvsPerl		
 
-void
-hello()
-    CODE:
-        printf("Hello, world!\n");
+INCLUDE: const-xs.inc
 
-int
-is_even(input)
-        int input
-    CODE:
-        RETVAL = (input % 2 == 0);
-    OUTPUT:
-        RETVAL
+TYPEMAP: <<END
+const char *	T_PV
+END
 
-void
-round(arg)
-        double  arg
-    CODE:
-    if (arg > 0.0) {
-        arg = floor(arg + 0.5);
-    } else if (arg < 0.0) {
-        arg = ceil(arg - 0.5);
-	} else {
-        arg = 0.0;
-    }
-    OUTPUT:
-        arg
+double
+foo(a,b,c)
+		int             a
+		long            b
+		const char *    c
+	OUTPUT:
+		RETVAL

@@ -1,1 +1,9 @@
-111
+http://perldoc.perl.org/perlxstut.html
+
+example1
+1. h2xs -A -n CvsPerl
+2. perl Makefile.PL
+
+
+example2
+h2xs -O -n CvsPerl ./CvsPerl/lib/testclib.h
