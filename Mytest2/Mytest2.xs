@@ -5,11 +5,11 @@
 
 #include "ppport.h"
 
-#include <./CvsPerl/lib/testclib.h>
-#include <./lib/testclib.h>
+#include "mylib/mylib.h"
+
 #include "const-c.inc"
 
-MODULE = CvsPerl		PACKAGE = CvsPerl		
+MODULE = Mytest2		PACKAGE = Mytest2		
 
 INCLUDE: const-xs.inc
 
@@ -19,8 +19,8 @@ END
 
 double
 foo(a,b,c)
-		int             a
-		long            b
-		const char *    c
+	int             a
+	long            b
+	const char *    c
 	OUTPUT:
-		RETVAL
+	RETVAL
