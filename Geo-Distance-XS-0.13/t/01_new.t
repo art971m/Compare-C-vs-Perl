@@ -8,6 +8,9 @@ isa_ok $geo, 'Geo::Distance::XS', 'new';
 can_ok $geo, qw(
 	multiply_perl
 	multiply_xs
+
+    factorial_perl
+	factorial_xs
 );
 
 done_testing;

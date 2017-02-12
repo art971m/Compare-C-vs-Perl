@@ -61,6 +61,17 @@ sub multiply_perl {
     return $number1 * $number2;
 }
 
+sub factorial_perl {
+    my ($self, $number) = @_;
+    
+    my $result = 1;
+    $result *= $number-- while ($number > 0);
+
+    return $result;
+
+}
+
+
 
 
 

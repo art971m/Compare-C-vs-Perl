@@ -245,3 +245,19 @@ multiply_xs (self, number1, number2)
     NV number2
 CODE:
     XSRETURN_NV(number1 * number2);
+
+void
+factorial_xs (self, number)
+    SV *self
+    UV number
+CODE:
+    int i = number;
+    double result = 1;
+    
+    for (; i > 1; i--) {result *= i;}
+
+    XSRETURN_NV(result);
+
+    
+  
+
