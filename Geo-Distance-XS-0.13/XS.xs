@@ -235,3 +235,13 @@ CODE:
         case 6: func = &andoyer_lambert_thomas; break;
     }
     XSRETURN_NV(_count_units(self, unit) * (*func)(lat1, lon1, lat2, lon2));
+
+
+
+void
+multiply_xs (self, number1, number2)
+    SV *self
+    NV number1
+    NV number2
+CODE:
+    XSRETURN_NV(number1 * number2);

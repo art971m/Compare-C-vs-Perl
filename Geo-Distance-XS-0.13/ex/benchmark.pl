@@ -1,6 +1,12 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+# use lib '../lib';
+# use lib './lib';
+# use lib '/tmp/Geo-Distance-XS-0.13/lib';
+use lib '/tmp/Geo-Distance-XS-0.13/blib/lib';
+use lib '/tmp/Geo-Distance-XS-0.13/blib/arch';
+
 
 use Benchmark qw(cmpthese timethese);
 use Geo::Distance::XS;

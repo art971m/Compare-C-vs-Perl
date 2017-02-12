@@ -3,9 +3,11 @@ use warnings;
 use Geo::Distance::XS;
 use Test::More;
 
-my $geo = Geo::Distance->new;
-isa_ok $geo, 'Geo::Distance', 'new';
-can_ok 'Geo::Distance', qw(distance formula);
-cmp_ok scalar @Geo::Distance::XS::FORMULAS, '>', 2, '@FORMULAS exists';
+my $geo = Geo::Distance::XS->new;
+isa_ok $geo, 'Geo::Distance::XS', 'new';
+can_ok $geo, qw(
+	multiply_perl
+	multiply_xs
+);
 
 done_testing;
