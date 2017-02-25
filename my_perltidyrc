@@ -1,0 +1,59 @@
+# http://perltidy.sourceforge.net/perltidy.html
+
+--perl-best-practices             # abbreviation for the parameters in the book Perl Best Practices by Damian 
+--maximum-line-length=150         # maximum line length
+--indent-columns=4                # Use n columns per indentation level (default n=4).
+--default-tabsize=4               # This number of spaces n corresponding to each leading tab of the input stream may be specified with -dt=n. The default is n=8.
+--check-syntax                    # This flag causes perltidy to run perl -c -T to check syntax of input and output
+#--preserve-line-endings           # This flag tells perltidy to write its output files with the same line endings as the input file
+--closing-token-indentation=0     # The -cti=n flag controls the indentation of a line beginning with a ), ], or a non-block }. Such a line receives:
+                                  # -cti = 0 no extra indentation (default)
+                                  # -cti = 1 extra indentation such that the closing token aligns with its opening token.
+                                  # -cti = 2 one extra indentation level if the line looks like:
+                                  # );  or  ];  or  };
+                                  # -cti = 3 one extra indentation level always
+--want-left-space=".. << >> ** && || // => += -= .= %= &= |= ^= *= <> <= >= == =~ !~ != /= x= ... **= <<= >>= &&= ||= //= <=> = - / * | % x ~= \\ ? : . < > ^ & } h # q Q k C t i F j p m pp mm"
+--nowant-left-space="-> ++ -- , ) [ ] L R ; f"
+--want-right-space=".. << >> ** && || // => += -= .= %= &= |= ^= *= <> <= >= == =~ !~ != /= x= ... **= <<= >>= &&= ||= //= <=> = - / * | % x ~= \\ ? : . < > ^ & { ; f # q Q k C R i F"
+--nowant-right-space="! \\ -> ++ -- ( [ L h t j p m pp mm"
+--space-after-keyword="my local our and or eq ne if elsif until unless while for foreach return case given when sub"
+--trim-pod                        # will remove trailing whitespace from lines of POD. The default is not to do this.
+--indent-spaced-block-comments    # If there is no leading space on the line, then the comment will not be indented, and otherwise it may be.
+--format-skipping                 # This flag, which is enabled by default, causes any code between special beginning and ending comment markers to be passed to the output without formatting. The default beginning marker is #<<< and the default ending marker is #>>> but they may be changed (see next items below). 
+--cuddled-else                    # Enable the "cuddled else" style, in which else and elsif are follow immediately after the curly brace closing the previous block.
+--opening-token-right             # The -otr flag is a hint that perltidy should not place a break between a comma and an opening token. 
+--continuation-indentation=4      # Continuation indentation is extra indentation spaces applied when a long line is broken.
+--character-encoding=utf8         # where s=none or utf8.
+--nooutdent-labels                # use default indebt for LABELS:
+--paren-tightness=2               # parameter controls the space within parens. The example below shows the effect of the three possible values, 0, 1, and 2:
+                                  # if ( ( my $len_tab = length( $tabstr ) ) > 0 ) {  # -pt=0
+                                  # if ( ( my $len_tab = length($tabstr) ) > 0 ) {    # -pt=1 (default)
+                                  # if ((my $len_tab = length($tabstr)) > 0) {        # -pt=2
+--block-brace-tightness=0         # curly braces which contain blocks of code are controlled by the parameter 
+                                  # %bf = map { $_ => -M $_ } grep { /\.deb$/ } dirents '.'; # -bbt=0 (default)
+                                  # %bf = map { $_ => -M $_ } grep {/\.deb$/} dirents '.';   # -bbt=1
+                                  # %bf = map {$_ => -M $_} grep {/\.deb$/} dirents '.';     # -bbt=2
+-tight-secret-operators           # The flag -tso causes certain perl token sequences (secret operators) 
+--nospace-terminal-semicolon      # Some programmers prefer a space before all terminal semicolons. The default is for no such space, and is indicated with -nsts or --nospace-terminal-semicolon.
+--nospace-for-semicolon           # Semicolons within for loops may sometimes be hard to see, particularly when commas are also present. This option places spaces on both sides of these special semicolons, and is the default. Use -nsfs or --nospace-for-semicolon to deactivate it.
+--noadd-semicolons                # Setting -asc allows perltidy to add any missing optional semicolon at the end of a line which is followed by a closing curly brace on the next line. This is the default, and may be deactivated with -nasc or --noadd-semicolons.
+--nospace-function-paren          # Space between all function names and opening parens
+--nooutdent-long-comments         # When -olc is set, lines which are full-line (block) comments longer than the value maximum-line-length will have their indentation removed. This is the default; use -nolc to prevent outdenting.
+--hanging-side-comments           # By default, perltidy tries to identify and align "hanging side comments"
+--break-at-old-comma-breakpoints  # This flag tells perltidy to try to break at all old commas. This is not the default.
+--vertical-tightness=0            # Opening tokens (except for block braces) are controlled by -vt=n, or --vertical-tightness=n, where
+                                  # -vt=0 always break a line after opening token (default). 
+                                  # -vt=1 do not break unless this would produce more than one 
+                                  #        step in indentation in a line.
+                                  # -vt=2 never break a line after opening token
+--blank-lines-before-subs=1       # The parameter -blbs=n requests that least n blank lines precede a sub definition which does not follow a comment and which is more than one-line long.
+--maximum-consecutive-blank-lines=2 # The requested number of blanks statement will be inserted regardless of the value of --maximum-consecutive-blank-lines=n (-mbl=n) with the exception that if -mbl=0 then no blanks will be output.
+--blanks-before-comments          # A blank line will be introduced before a full-line comment. 
+
+# --format-skipping-begin=string  # '#<<<'
+# --format-skipping-end=string    # '#>>>''
+# --freeze-newlines               # If you do not want any changes to the line breaks within lines of code in your script
+# --brace-left-and-indent-list=s  # Use this parameter to change the types of block braces for which the -bli flag applies; see Specifying Block Types. For example, -blil='if elsif else' would apply it to only if/elsif/else blocks.
+# --freeze-blank-lines            # Set -fbl if you want to the blank lines in your script to remain exactly as they are. The rest of the parameters in this section may then be ignored. (Note: setting the -fbl flag is equivalent to setting -mbl=0 and -kbl=2).
+# perltidy -html somefile.pl      # will produce a syntax-colored html file named somefile.pl.html which may be viewed with a browser.
+# --output-line-ending=unix         # where s=win, dos, unix, or mac. 

@@ -55,7 +55,6 @@ sub new {
     return bless {}, __PACKAGE__;
 }
 
-
 sub multiply_perl {
     my ($self, $number1, $number2) = @_;
     return $number1 * $number2;
