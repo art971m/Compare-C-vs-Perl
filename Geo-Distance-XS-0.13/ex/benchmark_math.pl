@@ -37,164 +37,164 @@ use Data::Dumper;
 ########
 # LDAP #
 ########
-use constant {
-    BASE          => 'ou=users,dc=ubs,dc=com',
-    DN_FORMAT     => 'ubsUserID=user%s,ou=users,dc=ubs,dc=com',
-    ENTRY_COUNT   => 100000,
-    OBJECTCLASSES => [qw( top ubsUserObjectClass )],
-    ATTR_USERID   => 'ubsUserID',
-    ATTR_DESC     => 'description',
-};
+# use constant {
+#     BASE          => 'ou=users,dc=ubs,dc=com',
+#     DN_FORMAT     => 'ubsUserID=user%s,ou=users,dc=ubs,dc=com',
+#     ENTRY_COUNT   => 100000,
+#     OBJECTCLASSES => [qw( top ubsUserObjectClass )],
+#     ATTR_USERID   => 'ubsUserID',
+#     ATTR_DESC     => 'description',
+# };
 
-use constant {
-    DN_FORMAT     => ATTR_USERID . '=user%s,' . BASE,
-    FILTER_FORMAT => ATTR_USERID . '=user%s',
-};
+# use constant {
+#     DN_FORMAT     => ATTR_USERID . '=user%s,' . BASE,
+#     FILTER_FORMAT => ATTR_USERID . '=user%s',
+# };
 
-use Net::LDAP qw();
-use Net::LDAP::Entry qw();
-use Net::LDAPxs qw();
-use Net::LDAPxs::Entry qw();
-use Net::LDAPxs::Exception qw();
+# use Net::LDAP qw();
+# use Net::LDAP::Entry qw();
+# use Net::LDAPxs qw();
+# use Net::LDAPxs::Entry qw();
+# use Net::LDAPxs::Exception qw();
 
-#####################
-#### Net::LDAPxs ####
-my $ldap_xs = Net::LDAPxs->new( 'localhost', port => 1389 );
-my $mesg = $ldap_xs->bind( 'cn=Directory Manager', password => 'password' );
-$mesg->code && die "failed to bind: ", $mesg->errstr;
+# #####################
+# #### Net::LDAPxs ####
+# my $ldap_xs = Net::LDAPxs->new( 'localhost', port => 1389 );
+# my $mesg = $ldap_xs->bind( 'cn=Directory Manager', password => 'password' );
+# $mesg->code && die "failed to bind: ", $mesg->errstr;
 
-my $t_ldap_xs_create = timethis(1, sub {
-    for my $i ( 1 .. ENTRY_COUNT ) {
-        my $dn = sprintf DN_FORMAT, $i;
-        my $result = $ldap_xs->add(
-            $dn,
-            attrs => {
-                objectClass => OBJECTCLASSES,
-                description => $i,
-            }
-        );
-        $result->code && warn "failed to add entry: ", $result->errstr;
-    }
-}, 'ldap_xs_create');
+# my $t_ldap_xs_create = timethis(1, sub {
+#     for my $i ( 1 .. ENTRY_COUNT ) {
+#         my $dn = sprintf DN_FORMAT, $i;
+#         my $result = $ldap_xs->add(
+#             $dn,
+#             attrs => {
+#                 objectClass => OBJECTCLASSES,
+#                 description => $i,
+#             }
+#         );
+#         $result->code && warn "failed to add entry: ", $result->errstr;
+#     }
+# }, 'ldap_xs_create');
 
-my $t_ldap_xs_search = timethis(1, sub {
-    $mesg = $ldap_xs->search(
-        base   => BASE,
-        scope => 'one',
-        filter => '(objectClass=*)',
-    );
-    $mesg->isa('Net::LDAPxs::Exception') && die $mesg->errstr;
-}, 'ldap_xs_search');
+# my $t_ldap_xs_search = timethis(1, sub {
+#     $mesg = $ldap_xs->search(
+#         base   => BASE,
+#         scope => 'one',
+#         filter => '(objectClass=*)',
+#     );
+#     $mesg->isa('Net::LDAPxs::Exception') && die $mesg->errstr;
+# }, 'ldap_xs_search');
 
-my $t_ldap_xs_update = timethis(1, sub {
-    for my $entry ( $mesg->entries() ) {
+# my $t_ldap_xs_update = timethis(1, sub {
+#     for my $entry ( $mesg->entries() ) {
 
-        my $result = $ldap_xs->modify(
-            $entry->dn(),
-            add => { (ATTR_DESC) => 'description2' },
-        );
+#         my $result = $ldap_xs->modify(
+#             $entry->dn(),
+#             add => { (ATTR_DESC) => 'description2' },
+#         );
 
-        $result->code && warn "failed to update entry: ", $result->errstr;
-    }
-}, 'ldap_xs_update');
+#         $result->code && warn "failed to update entry: ", $result->errstr;
+#     }
+# }, 'ldap_xs_update');
 
-my $t_ldap_xs_delete = timethis(1, sub {
-    for my $i ( 1 .. ENTRY_COUNT ) {
-        my $filter = sprintf FILTER_FORMAT, $i;
-        $mesg = $ldap_xs->search(
-            base   => BASE,
-            filter => $filter,
-        );
-        $mesg->isa('Net::LDAPxs::Exception') && die $mesg->errstr;
+# my $t_ldap_xs_delete = timethis(1, sub {
+#     for my $i ( 1 .. ENTRY_COUNT ) {
+#         my $filter = sprintf FILTER_FORMAT, $i;
+#         $mesg = $ldap_xs->search(
+#             base   => BASE,
+#             filter => $filter,
+#         );
+#         $mesg->isa('Net::LDAPxs::Exception') && die $mesg->errstr;
 
-        for my $entry ( $mesg->entries() ) {
-            my $result = $ldap_xs->delete( $entry->dn() );
-            $result->code && warn "failed to del entry: ", $result->errstr;
-        }
+#         for my $entry ( $mesg->entries() ) {
+#             my $result = $ldap_xs->delete( $entry->dn() );
+#             $result->code && warn "failed to del entry: ", $result->errstr;
+#         }
 
-    }
-}, 'ldap_xs_delete');
+#     }
+# }, 'ldap_xs_delete');
 
 
-#####################
-##### Net::LDAP #####
-my $ldap = Net::LDAP->new( 'localhost', port => 1389 );
-$mesg = $ldap->bind( 'cn=Directory Manager', password => 'password' );
-$mesg->code && die "failed to bind: ", $mesg->error;
+# #####################
+# ##### Net::LDAP #####
+# my $ldap = Net::LDAP->new( 'localhost', port => 1389 );
+# $mesg = $ldap->bind( 'cn=Directory Manager', password => 'password' );
+# $mesg->code && die "failed to bind: ", $mesg->error;
 
-my $t_ldap_create = timethis(1, sub {
-    for my $i ( 1 .. ENTRY_COUNT ) {
-        my $dn = sprintf DN_FORMAT, $i;
-        my $entry = Net::LDAP::Entry->new(
-            $dn,
-            objectClass => OBJECTCLASSES,
-            description => $i,
-        );
-        my $result = $ldap->add($entry);
-        $result->code && warn "failed to add entry: ", $result->error;
-    }
-}, 'ldap_create');
+# my $t_ldap_create = timethis(1, sub {
+#     for my $i ( 1 .. ENTRY_COUNT ) {
+#         my $dn = sprintf DN_FORMAT, $i;
+#         my $entry = Net::LDAP::Entry->new(
+#             $dn,
+#             objectClass => OBJECTCLASSES,
+#             description => $i,
+#         );
+#         my $result = $ldap->add($entry);
+#         $result->code && warn "failed to add entry: ", $result->error;
+#     }
+# }, 'ldap_create');
 
-my $t_ldap_search = timethis(1, sub {
-    $mesg = $ldap->search(
-        base   => BASE,
-        scope => 'one',
-        filter => '(objectClass=*)',
-    );
-    $mesg->code && die $mesg->error;
-}, 'ldap_search');
+# my $t_ldap_search = timethis(1, sub {
+#     $mesg = $ldap->search(
+#         base   => BASE,
+#         scope => 'one',
+#         filter => '(objectClass=*)',
+#     );
+#     $mesg->code && die $mesg->error;
+# }, 'ldap_search');
 
-my $t_ldap_update = timethis(1, sub {
-    for my $entry ( $mesg->entries() ) {
-        $entry->add((ATTR_DESC) => 'description2');
-        my $result = $entry->update($ldap);
-        $result->code && warn "failed to update entry: ", $result->error;
-    }
-}, 'ldap_update');
+# my $t_ldap_update = timethis(1, sub {
+#     for my $entry ( $mesg->entries() ) {
+#         $entry->add((ATTR_DESC) => 'description2');
+#         my $result = $entry->update($ldap);
+#         $result->code && warn "failed to update entry: ", $result->error;
+#     }
+# }, 'ldap_update');
 
-my $t_ldap_delete = timethis(1, sub {
-    for my $i ( 1 .. ENTRY_COUNT ) {
-        my $filter = sprintf FILTER_FORMAT, $i;
-        $mesg = $ldap->search(
-            base   => BASE,
-            filter => $filter,
-        );
-        $mesg->code && die $mesg->error;
+# my $t_ldap_delete = timethis(1, sub {
+#     for my $i ( 1 .. ENTRY_COUNT ) {
+#         my $filter = sprintf FILTER_FORMAT, $i;
+#         $mesg = $ldap->search(
+#             base   => BASE,
+#             filter => $filter,
+#         );
+#         $mesg->code && die $mesg->error;
 
-        for my $entry ( $mesg->entries() ) {
-            my $result = $ldap->delete($entry);
-            $result->code && warn "failed to del entry: ", $result->error;
-        }
-    }
-}, 'ldap_delete');
+#         for my $entry ( $mesg->entries() ) {
+#             my $result = $ldap->delete($entry);
+#             $result->code && warn "failed to del entry: ", $result->error;
+#         }
+#     }
+# }, 'ldap_delete');
 
-print "\n\n";
+# print "\n\n";
 
-cmpthese({
-    ldap_create => $t_ldap_create,
-    ldap_xs_create => $t_ldap_xs_create,
-}, 'all' );
+# cmpthese({
+#     ldap_create => $t_ldap_create,
+#     ldap_xs_create => $t_ldap_xs_create,
+# }, 'all' );
 
-cmpthese({
-    ldap_search => $t_ldap_search,
-    ldap_xs_search => $t_ldap_xs_search,
-}, 'all' );
+# cmpthese({
+#     ldap_search => $t_ldap_search,
+#     ldap_xs_search => $t_ldap_xs_search,
+# }, 'all' );
 
-cmpthese({
-    ldap_update => $t_ldap_update,
-    ldap_xs_update => $t_ldap_xs_update,
-}, 'all' );
+# cmpthese({
+#     ldap_update => $t_ldap_update,
+#     ldap_xs_update => $t_ldap_xs_update,
+# }, 'all' );
 
-cmpthese({
-    ldap_delete => $t_ldap_delete,
-    ldap_xs_delete => $t_ldap_xs_delete,
-}, 'all' );
+# cmpthese({
+#     ldap_delete => $t_ldap_delete,
+#     ldap_xs_delete => $t_ldap_xs_delete,
+# }, 'all' );
 
 # print Dumper $t_ldap_create;
 # print Dumper $t_ldap_xs_create;
 # print Dumper timediff($t_ldap_create, $t_ldap_xs_create);
 # print Dumper timestr(timediff($t_ldap_create, $t_ldap_xs_create));
-exit;
+# exit;
 
 #############################################################################
 
@@ -210,6 +210,9 @@ my $worksheet = $workbook->add_worksheet();
 my $xlsx_row  = 0;
 
 my $math = Geo::Distance::XS->new();
+
+print Dumper $math->split_xs(';', ';ab;cd;ef;;');
+exit;
 
 my ( $number1, $number2 ) = ( 1.2, 1.5 );
 my $results = timethese( COUNT,

@@ -38,3 +38,6 @@ fi
 
 make 
 make test
+echo
+echo
+perl ./ex/benchmark_math.pl

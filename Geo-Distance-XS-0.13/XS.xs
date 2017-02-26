@@ -258,6 +258,42 @@ CODE:
 
     XSRETURN_NV(result);
 
-    
-  
+void
+split_xs(self, delimiter, string)
+        SV *self
+        char *delimiter
+        char *string
+    INIT:
+        char delim = delimiter[0];
+        char tmp_string[64];
+        int count = 0;
+        int i = 0;
+        int j = 0;
+    PPCODE:
+
+        for (i = 0; string[i] != 0; i++){
+            if (string[i] == delim) {
+                count++;
+                tmp_string[j] = '\0';
+                EXTEND(SP, count);
+                PUSHs(sv_2mortal(newSVpv(tmp_string, 0)));
+                j = 0;
+            } else {
+                tmp_string[j] = string[i];
+                j++;
+            }
+        }
+
+
+        if (count == 0) {
+            EXTEND(SP, 1);
+            PUSHs(sv_2mortal(newSVpv(string, 0)));
+        } else {
+            count++;
+            tmp_string[j] = '\0';
+            EXTEND(SP, count);
+            PUSHs(sv_2mortal(newSVpv(tmp_string, 0)));
+        }
+
+
 
