@@ -1,4 +1,4 @@
-package Geo::Distance::XS;
+package Benchmark::of::XS;
 
 use strict;
 use warnings;

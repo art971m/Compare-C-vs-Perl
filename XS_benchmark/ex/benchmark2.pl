@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Benchmark qw(cmpthese timethese);
-use Geo::Distance::XS;
+use Benchmark::of::XS;
 use List::Util qw(max);
 
 my @tests = (
@@ -22,7 +22,7 @@ my @coords = (
 );
 
 my %geos;
-my @formulas = @Geo::Distance::XS::FORMULAS;
+my @formulas = @Benchmark::of::XS::FORMULAS;
 my $max_name_len = 0;
 for my $f (@formulas) {
     my $geo = Geo::Distance->new;

@@ -205,7 +205,7 @@ _count_units (SV *self, SV *unit) {
     return SvNV(*svp);
 }
 
-MODULE = Geo::Distance::XS    PACKAGE = Geo::Distance::XS
+MODULE = Benchmark::of::XS    PACKAGE = Benchmark::of::XS
 
 PROTOTYPES: DISABLE
 

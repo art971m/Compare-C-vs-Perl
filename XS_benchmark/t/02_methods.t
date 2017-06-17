@@ -1,12 +1,12 @@
 use strict;
 use warnings;
-use Geo::Distance::XS;
+use Benchmark::of::XS;
 use Test::More tests => 8;
 
 use constant { TOLERANCE => 1e-13 };
 
 
-my $test_xs = Geo::Distance::XS->new;
+my $test_xs = Benchmark::of::XS->new;
 
 my ( $string, $expected, $got );
 $string   = q{ab;cd};

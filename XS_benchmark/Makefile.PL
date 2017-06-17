@@ -3,24 +3,17 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %conf = (
-    NAME           => 'Geo::Distance::XS',
-    AUTHOR         => 'gray <gray@cpan.org>',
+    NAME           => 'Benchmark::of::XS',
     LICENSE        => 'perl',
-    VERSION_FROM   => 'lib/Geo/Distance/XS.pm',
-    ABSTRACT_FROM  => 'lib/Geo/Distance/XS.pm',
+    VERSION_FROM   => 'lib/Benchmark/of/XS.pm',
+    ABSTRACT_FROM  => 'lib/Benchmark/of/XS.pm',
     LIBS           => ['-lm'],
     BUILD_REQUIRES => { 'Test::More' => 0.82, },
     PREREQ_PM      => {
-        'Geo::Distance' => 0.16,
         XSLoader        => 0,
     },
-    META_MERGE     => {
-        resources => {
-            repository => 'http://github.com/gray/geo-distance-xs',
-        }
-    },
     dist           => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean          => { FILES => 'Geo-Distance-XS-*' },
+    clean          => { FILES => 'XS_benchmark*' },
 );
 
 my $eumm_version =  do {

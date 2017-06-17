@@ -9,7 +9,7 @@ use lib '/tmp/Geo-Distance-XS-0.13/blib/arch';
 
 
 use Benchmark qw(cmpthese timethese);
-use Geo::Distance::XS;
+use Benchmark::of::XS;
 use GIS::Distance;
 use GIS::Distance::Fast;
 
@@ -21,10 +21,10 @@ my $orig_timethis_sub = \&Benchmark::timethis;
     *Benchmark::timethis = sub {
         my $label = $_[2];
         if ('perl' eq $label) {
-            Geo::Distance::XS->unimport;
+            Benchmark::of::XS->unimport;
         }
         elsif ('xs' eq $label) {
-            Geo::Distance::XS->import;
+            Benchmark::of::XS->import;
         }
 
         $orig_timethis_sub->(@_);
@@ -62,10 +62,10 @@ for my $formula (qw(hsin tv polar cos gcd mt)) {
     $geo->formula($formula);
     $gis->formula($gis_formula{$formula});
 
-    Geo::Distance::XS->unimport;
+    Benchmark::of::XS->unimport;
     printf "perl     - distance from LA to NY: %s miles\n", geo();
 
-    Geo::Distance::XS->import;
+    Benchmark::of::XS->import;
     printf "xs       - distance from LA to NY: %s miles\n", geo();
 
     printf "gis_fast - distance from LA to NY: %s miles\n", gis();

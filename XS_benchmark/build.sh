@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf /tmp/Geo-Distance-XS-0.13
+rm -rf /tmp/XS_benchmark
 if [ $? != 0 ]; then
 	echo "Error rm"
 	exit 1
@@ -9,7 +9,7 @@ else
 fi
 
 
-cp -r /media/sf_Share/Compare-C-vs-Perl/Geo-Distance-XS-0.13 /tmp
+cp -r /media/sf_Share/Compare-C-vs-Perl/XS_benchmark /tmp
 if [ $? != 0 ]; then
 	echo "Error copy to tmp"
 	exit 1
@@ -18,7 +18,7 @@ else
 fi
 
 
-cd /tmp/Geo-Distance-XS-0.13
+cd /tmp/XS_benchmark
 if [ $? != 0 ]; then
 	echo "Error cd"
 	exit 1
@@ -41,4 +41,4 @@ make test
 echo
 echo
 
-perl /tmp/Geo-Distance-XS-0.13/ex/benchmark_math.pl
+perl /tmp/XS_benchmark/ex/benchmark_math.pl
