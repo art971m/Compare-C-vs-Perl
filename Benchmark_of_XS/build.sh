@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf /tmp/XS_benchmark
+rm -rf /tmp/Benchmark_of_XS
 if [ $? != 0 ]; then
 	echo "Error rm"
 	exit 1
@@ -9,7 +9,7 @@ else
 fi
 
 
-cp -r /media/sf_Share/Compare-C-vs-Perl/XS_benchmark /tmp
+cp -r /media/sf_Share/Compare-C-vs-Perl/Benchmark_of_XS /tmp
 if [ $? != 0 ]; then
 	echo "Error copy to tmp"
 	exit 1
@@ -18,7 +18,7 @@ else
 fi
 
 
-cd /tmp/XS_benchmark
+cd /tmp/Benchmark_of_XS
 if [ $? != 0 ]; then
 	echo "Error cd"
 	exit 1
@@ -41,4 +41,4 @@ make test
 echo
 echo
 
-perl /tmp/XS_benchmark/ex/benchmark_math.pl
+perl /tmp/Benchmark_of_XS/ex/benchmark_math.pl

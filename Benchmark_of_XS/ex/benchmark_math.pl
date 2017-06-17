@@ -2,17 +2,14 @@
 use strict;
 use warnings;
 
-# use lib '../lib';
-# use lib './lib';
-# use lib '/tmp/Geo-Distance-XS-0.13/lib';
-use lib '/tmp/Geo-Distance-XS-0.13/blib/lib';
-use lib '/tmp/Geo-Distance-XS-0.13/blib/arch';
+use lib '/tmp/Benchmark_of_XS/blib/lib';
+use lib '/tmp/Benchmark_of_XS/blib/arch';
 
 use Benchmark
     qw(:hireswallclock cmpthese timethese timethis timediff timestr);
 use Excel::Writer::XLSX;
-use Geo::Distance::XS;
- use GIS::Distance;
+use Benchmark::of::XS;
+use GIS::Distance;
 use GIS::Distance::Fast;
 
 use Devel::Size qw(size total_size);
@@ -205,7 +202,7 @@ my $workbook  = Excel::Writer::XLSX->new('/tmp/benchmark.xlsx');
 my $worksheet = $workbook->add_worksheet();
 my $xlsx_row  = 0;
 
-my $math = Geo::Distance::XS->new();
+my $math = Benchmark::of::XS->new();
 
 exit;
 
