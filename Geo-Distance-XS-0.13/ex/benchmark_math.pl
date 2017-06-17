@@ -8,10 +8,11 @@ use warnings;
 use lib '/tmp/Geo-Distance-XS-0.13/blib/lib';
 use lib '/tmp/Geo-Distance-XS-0.13/blib/arch';
 
-use Benchmark qw(:hireswallclock cmpthese timethese timethis timediff timestr);
+use Benchmark
+    qw(:hireswallclock cmpthese timethese timethis timediff timestr);
 use Excel::Writer::XLSX;
 use Geo::Distance::XS;
-use GIS::Distance;
+ use GIS::Distance;
 use GIS::Distance::Fast;
 
 use Devel::Size qw(size total_size);
@@ -32,8 +33,6 @@ use Data::Dumper;
 # ldap_xs_delete: 153.281 wallclock secs ( 4.78 usr + 11.55 sys = 16.33 CPU) @  0.06/s (n=1)
 # ldap_delete: 250.63 wallclock secs (29.77 usr + 49.96 sys = 79.73 CPU) @  0.01/s (n=1)
 
-
-          
 ########
 # LDAP #
 ########
@@ -114,7 +113,6 @@ use Data::Dumper;
 
 #     }
 # }, 'ldap_xs_delete');
-
 
 # #####################
 # ##### Net::LDAP #####
@@ -201,9 +199,7 @@ use Data::Dumper;
 ########
 #  #
 ########
-use constant {
-    COUNT => 4000000,
-};
+use constant { COUNT => 4000000, };
 
 my $workbook  = Excel::Writer::XLSX->new('/tmp/benchmark.xlsx');
 my $worksheet = $workbook->add_worksheet();
@@ -211,7 +207,6 @@ my $xlsx_row  = 0;
 
 my $math = Geo::Distance::XS->new();
 
-print Dumper $math->split_xs(';', ';ab;cd;ef;;');
 exit;
 
 my ( $number1, $number2 ) = ( 1.2, 1.5 );
@@ -224,10 +219,10 @@ my $results = timethese( COUNT,
     'none'
 );
 
-print Dumper $results; die "FFFFFFFFFFFFF";
+print Dumper $results;
+die "FFFFFFFFFFFFF";
 my $rows = cmpthese( $results, 'all' );
 add_benchmark_report( 'Multiplication', $results, $rows );
-
 
 $number1 = 20;
 $results = timethese( COUNT,
@@ -238,7 +233,6 @@ $results = timethese( COUNT,
 );
 $rows = cmpthese( $results, 'all' );
 add_benchmark_report( 'Factorial', $results, $rows );
-
 
 #############################################################################
 
@@ -264,7 +258,6 @@ sub add_benchmark_report {
         push @full_row,    @{$row};
         push @full_report, \@full_row;
     }
-
 
     $worksheet->write( $xlsx_row, 0, $name );
     for my $full_row (@full_report) {

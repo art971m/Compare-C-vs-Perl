@@ -40,4 +40,5 @@ make
 make test
 echo
 echo
-perl ./ex/benchmark_math.pl
+
+perl /tmp/Geo-Distance-XS-0.13/ex/benchmark_math.pl

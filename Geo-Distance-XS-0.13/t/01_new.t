@@ -1,16 +1,16 @@
 use strict;
 use warnings;
 use Geo::Distance::XS;
-use Test::More;
+use Test::More tests => 2;
 
-my $geo = Geo::Distance::XS->new;
-isa_ok $geo, 'Geo::Distance::XS', 'new';
+my $geo = new_ok( 'Geo::Distance::XS' );
 can_ok $geo, qw(
 	multiply_perl
 	multiply_xs
 
     factorial_perl
 	factorial_xs
-);
 
-done_testing;
+	split_perl
+	split_xs
+);

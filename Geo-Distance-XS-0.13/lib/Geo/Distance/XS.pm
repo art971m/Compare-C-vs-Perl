@@ -70,6 +70,66 @@ sub factorial_perl {
 
 }
 
+sub split_perl {
+    my ($self, $delimiter, $string) = @_;
+
+    my @splited;
+    my ($j, $last_i) = (0, 0);
+    my $len = length($string) - 1;
+    for my $i (0 .. $len ) {
+        if(substr($string, $i, 1) eq $delimiter) {
+            push @splited, substr($string, $j, $i - $j);
+            $j = $i + 1;
+        }
+        $last_i = $i;
+    }
+
+    if (substr($string, $len, 1) eq $delimiter) {
+        push @splited, q{};
+    }
+
+    if ($last_i >= $j) {
+        push @splited, substr($string, $j, $last_i - $j + 1);
+    }
+
+    return @splited;
+}
+
+# split_xs(self, delimiter, string)
+#         SV *self
+#         char *delimiter
+#         char *string
+#     INIT:
+#         char delim = delimiter[0];
+#         char tmp_string[64];
+#         int count = 0;
+#         int i = 0;
+#         int j = 0;
+#     PPCODE:
+
+#         for (i = 0; string[i] != 0; i++){
+#             if (string[i] == delim) {
+#                 count++;
+#                 tmp_string[j] = '\0';
+#                 EXTEND(SP, count);
+#                 PUSHs(sv_2mortal(newSVpv(tmp_string, 0)));
+#                 j = 0;
+#             } else {
+#                 tmp_string[j] = string[i];
+#                 j++;
+#             }
+#         }
+
+
+#         if (count == 0) {
+#             EXTEND(SP, 1);
+#             PUSHs(sv_2mortal(newSVpv(string, 0)));
+#         } else {
+#             count++;
+#             tmp_string[j] = '\0';
+#             EXTEND(SP, count);
+#             PUSHs(sv_2mortal(newSVpv(tmp_string, 0)));
+#         }
 
 
 
