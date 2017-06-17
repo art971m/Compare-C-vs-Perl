@@ -296,4 +296,19 @@ split_xs(self, delimiter, string)
         }
 
 
+void
+substr_xs(self, expr, ofset, length)
+        SV *self
+        char *expr
+        UV ofset
+        UV length
+    INIT:
+        char subbuff[64];
+    PPCODE:
+
+    memcpy( subbuff, &expr[ofset], length );
+    subbuff[length] = '\0';
+
+    XSRETURN_PV(subbuff);
+   
 

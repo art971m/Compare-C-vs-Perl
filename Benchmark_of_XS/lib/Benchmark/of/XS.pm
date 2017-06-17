@@ -95,6 +95,16 @@ sub split_perl {
     return @splited;
 }
 
+
+# substr EXPR,OFFSET,LENGTH
+sub substr_perl {
+use Data::Dumper;    
+    my ($self, $expr, $ofset, $length) = @_;
+    my @str_as_array = split //, $expr;
+    my @result_str_as_array = @str_as_array[$ofset .. ($ofset + $length - 1)];
+    return join q{}, @result_str_as_array;
+}
+
 # split_xs(self, delimiter, string)
 #         SV *self
 #         char *delimiter

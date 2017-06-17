@@ -7,7 +7,6 @@ use lib '/tmp/Benchmark_of_XS/blib/arch';
 
 use Benchmark
     qw(:hireswallclock cmpthese timethese timethis timediff timestr);
-use Excel::Writer::XLSX;
 use Benchmark::of::XS;
 use GIS::Distance;
 use GIS::Distance::Fast;
@@ -196,77 +195,52 @@ use Data::Dumper;
 ########
 #  #
 ########
-use constant { COUNT => 4000000, };
-
-my $workbook  = Excel::Writer::XLSX->new('/tmp/benchmark.xlsx');
-my $worksheet = $workbook->add_worksheet();
-my $xlsx_row  = 0;
-
 my $math = Benchmark::of::XS->new();
 
-exit;
 
+# multiply
+my $count = 10000000;
 my ( $number1, $number2 ) = ( 1.2, 1.5 );
-my $results = timethese( COUNT,
+my $results = timethese($count,
     {   'multiplication perl' =>
             sub { $math->multiply_perl( $number1, $number2 ) },
         'multiplication xs' =>
             sub { $math->multiply_xs( $number1, $number2 ) },
     },
-    'none'
+    'all'
 );
 
-print Dumper $results;
-die "FFFFFFFFFFFFF";
-my $rows = cmpthese( $results, 'all' );
-add_benchmark_report( 'Multiplication', $results, $rows );
-
+# factorial
+$count = 4000000;
 $number1 = 20;
-$results = timethese( COUNT,
+$results = timethese($count,
     {   'factorial perl' => sub { $math->factorial_perl($number1) },
         'factorial xs'   => sub { $math->factorial_xs($number1) },
     },
-    'none'
+    'all'
 );
-$rows = cmpthese( $results, 'all' );
-add_benchmark_report( 'Factorial', $results, $rows );
 
-#############################################################################
 
-########
-# Subs #
-########
-sub add_benchmark_report {
-    my ( $name, $results, $rows ) = @_;
+# split
+$count = 1000000;
+my $delimiter = q{;};
+my $string    = q{;ab;cd;ef;;};
+$results = timethese($count,
+    {   'split perl'   => sub { $math->split_perl($delimiter, $string) },
+        'split xs'     => sub { $math->split_xs($delimiter, $string) },
+        'split native' => sub { split /$delimiter/, $string },
+    },
+    'all'
+);
 
-    my ( @full_report, @full_row );
+$count = 5000000;
+$string    = q{abcdf};
+my ($ofset, $length) = (2, 2);
+$results = timethese($count,
+    {   'substr perl'   => sub { $math->substr_perl($string, $ofset, $length) },
+        'substr xs'     => sub { $math->substr_xs($string, $ofset, $length) },
+        'substr native' => sub { substr $string, $ofset, $length },
+    },
+    'all'
+);
 
-    my $row = shift @{$rows};
-    push @full_row,    shift @{$row};
-    push @full_row,    'Wallclock';
-    push @full_row,    @{$row};
-    push @full_report, \@full_row;
-
-    for my $row ( @{$rows} ) {
-        my @full_row;
-        my $sub_name = shift @{$row};
-        push @full_row,    $sub_name;
-        push @full_row,    sprintf( "%.4f", $results->{$sub_name}->real() );
-        push @full_row,    @{$row};
-        push @full_report, \@full_row;
-    }
-
-    $worksheet->write( $xlsx_row, 0, $name );
-    for my $full_row (@full_report) {
-        $xlsx_row++;
-        my $counter = 0;
-        for my $col ( @{$full_row} ) {
-            $worksheet->write( $xlsx_row, $counter, $col );
-            $counter++;
-        }
-    }
-
-    $xlsx_row++;
-    $xlsx_row++;
-    return;
-}
