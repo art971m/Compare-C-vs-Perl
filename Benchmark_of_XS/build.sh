@@ -42,3 +42,6 @@ echo
 echo
 
 perl /tmp/Benchmark_of_XS/ex/benchmark_math.pl
+perl /tmp/Benchmark_of_XS/ex/benchmark_string.pl
+perl /tmp/Benchmark_of_XS/ex/benchmark_dist.pl
+perl /tmp/Benchmark_of_XS/ex/benchmark_ldap.pl

@@ -1,5 +1,7 @@
-ex/benchmark.pl
-ex/benchmark2.pl
+ex/benchmark_dist.pl
+ex/benchmark_ldap.pl
+ex/benchmark_math.pl
+ex/benchmark_string.pl
 lib/Benchmark/of/XS.pm
 Makefile.PL
 MANIFEST			This list of files

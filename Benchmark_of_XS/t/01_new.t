@@ -13,4 +13,7 @@ can_ok $geo, qw(
 
 	split_perl
 	split_xs
+
+	substr_perl
+	substr_xs
 );
