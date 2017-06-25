@@ -1,0 +1,202 @@
+=head1 Basic XS
+
+XS allows us to embed C code directly in the XS file. Hence, it doesn't need
+to be in a completely separate library. We can therefore write functions in
+C that will help us speed up our code. If we have a function that needs
+intensive calculation, moving that to C will give us much more speed.
+
+In this chapter we show how to create a basic C function in XS, how the same
+functionality can be achieved using Perl types, discuss simple interactive
+debugging strategies, and add automated tests of our newly created
+functions.
+
+=head2 Basic functions
+
+Let's add a function to our XS code.  Create a new directory for this
+project and copy across the skeleton C<XSFun.xs>, C<Makefile.PL> and
+C<ppport.h> files from our initial template directory.
+
+Open the C<XSFun.xs> file and copy the following after the I<XS code>
+comment:
+
+    double
+    add_numbers(double a, double b)
+        CODE:
+           RETVAL = a + b;
+        OUTPUT:
+           RETVAL
+
+We define a function called C<add_numbers>. It takes two numbers of type
+I<double> and as you can see by the definition, it also returns a I<double>
+type.
+
+We have a I<CODE> section which sets the return value (I<RETVAL>) to the sum
+of I<a> and I<b>. We also have an I<OUTPUT> section that indicates the output
+is the return value (I<RETVAL>).
+
+=head2 A touch of Perl API
+
+Instead of working with pure C types, we can use Perl types. We can write a
+function that receives pointers to two SVs (Scalar Values) and returns an SV
+pointer to the result. We will create a new SV to represent the value and
+return a pointer to that.
+
+    SV *
+    add_numbers_perl(SV *a, SV *b)
+        CODE:
+        {
+            const double sum = SvNV(a) + SvNV(b);
+            RETVAL = newSVnv(sum);
+        }
+        OUTPUT: RETVAL
+
+=head2 Building the project
+
+We're now in a position to build the project and compile the library.  As
+with many Perl modules one creates the C<Makefile> by running
+
+    perl Makefile.PL
+
+after which we merely need to run
+
+    make
+
+and our library is available within the C<blib> directory.
+
+Note that if you're using Strawberry Perl on Windows, use C<dmake> instead
+of C<make>.
+
+=head2 Playing with our shiny new library
+
+Let's have a quick play with the library.  We can use the Perl debugger as a
+kind of
+L<REPL|https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop>
+by using the C<-de0> options to C<perl>, then we can use the library and try
+running the functions we've just defined.  Type the following into the
+console:
+
+    perl -de0 -Iblib/lib -Iblib/arch
+
+The C<-I> options tell C<perl> where to look for the library files we just
+created with C<make>.  You will now see something like this:
+
+    Loading DB routines from perl5db.pl version 1.39_11
+    Editor support available.
+
+    Enter h or 'h h' for help, or 'man perldebug' for more help.
+
+    main::(-e:1):   0
+      DB<1>
+
+The C<< DB<x> >> is the prompt of our REPL; the number in the angle brackets
+will increment as we enter commands into the debugger.  Let's use the
+C<XSFun> module so that we can run our C<add_numbers> and
+C<add_numbers_perl> functions.
+
+Type
+
+    use XSFun
+
+at the command prompt.  You should simply see the prompt returned, which
+means that the library has been loaded successfully.  If an error occurred
+you might need to check the C<-I> options on the command line and/or rebuild
+the library; you can exit the debugger by entering C<q> at the prompt.
+
+Assuming all went well, we can see if we can add numbers together.  Since
+we've not yet exported the functions, we have to specify the functions along
+with the package name.  Try running the following commands at the prompt:
+
+    print XSFun::add_numbers(1, 2)
+    print XSFun::add_numbers(1.4, 3.2)
+
+As one would hope, we see the output C<3> and C<4.6> respectively.  Hooray!
+The C<add_numbers> function seems to work as expected.  Running similar
+commands on the C<add_numbers_perl> function also shows that this function
+behaves as we would wish.  Quit the debugger by typing C<q> at the prompt.
+
+=head2 Exporting our functions
+
+It'd be nicer to simply have to call C<add_numbers> or C<add_numbers_perl>
+without having to prefix them with the package name.  To do this we need to
+export the functions.
+
+Open F<lib/XSFun.pm> and fix the C<%EXPORT_TAGS> variable to include the
+functions we wish to export:
+
+    our %EXPORT_TAGS = ( 'all' => [qw<add_numbers add_numbers_perl>] );
+
+If we now run C<make>, reload the debugger and load the library with
+
+    use XSFun qw(:all)
+
+then we will find that we can call the functions directly:
+
+      DB<2> print add_numbers(2, 3)
+    5
+      DB<3> q
+
+=head2 Testing
+
+Checking that things work by using the Perl debugger as a REPL is nice to
+quickly show that something worked, however it'd be heaps better if we could
+automate the process.  So, let's write a small test script that shows off
+our spectacular code. Create a directory F<t> and inside it create the
+following file F<add_numbers.t>:
+
+    #!perl
+    use strict;
+    use warnings;
+
+    use Test::More tests => 9;
+
+    use_ok( 'XSFun', ':all' );
+
+    # testing integers
+    is( add_numbers(  5, 3 ),  8, '5 + 3 = 8'   );
+    is( add_numbers( 31, 1 ), 32, '31 + 1 = 32' );
+
+    is( add_numbers_perl(  5, 3 ),  8, '5 + 3 = 8'   );
+    is( add_numbers_perl( 31, 1 ), 32, '31 + 1 = 32' );
+
+    # testing fractions
+    is( add_numbers( 3.1, 4.2 ), 7.3, '3.1 + 4.2 = 7.3' );
+    is( add_numbers( 3.2, 4.3 ), 7.5, '3.2 + 4.3 = 7.5' );
+
+    is( add_numbers_perl( 3.1, 4.2 ), 7.3, '3.1 + 4.2 = 7.3' );
+    is( add_numbers_perl( 3.2, 4.3 ), 7.5, '3.2 + 4.3 = 7.5' );
+
+Now let's run the tests:
+
+    make test
+
+You should see output similar to this:
+
+    t/add_numbers.t .. ok
+    All tests successful.
+    Files=1, Tests=9,  0 wallclock secs ( 0.02 usr  0.01 sys +  0.02 cusr  0.00
+    csys =  0.05 CPU)
+    Result: PASS
+
+=head3 Why use C<Test::More::is> instead of C<Test::More::cmp_ok>?
+
+Usually we would use C<Test::More>'s C<cmp_ok()> to test numerical values, but
+in this case we picked C<is()>. The reason is that the result we get back from
+our function has a different absolute value from the one we check for in the
+function, because of how Perl stores floating point values.
+
+We can use C<sprintf()> to show the differences:
+
+    $ perl -e 'printf "%.40f\n", $_ for 3.1+4.2, 7.3'
+    7.3000000000000007105427357601001858711243
+    7.2999999999999998223643160599749535322189
+
+=head2 Cleaning up
+
+Note that you can run the following command to clean up your directory:
+
+    make clean
+
+This will remove almost all files that have been automatically generated.
+To be more thorough, you can use
+
+    make realclean
